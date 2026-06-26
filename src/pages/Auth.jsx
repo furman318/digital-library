@@ -1,75 +1,96 @@
 import React, { useState } from 'react';
 
-function Auth() {
-  // Состояние для переключения между Входом и Регистрацией
+// Добавили прием пропсов из App.jsx
+function Auth({ setUser, setView }) {
   const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+    setIsLoading(true); 
+    setError(null);     
+
+    const userData = isLogin 
+      ? { email, password } 
+      : { fullName, email, password };
+
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/${isLogin ? 'login' : 'register'}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Ошибка сервера');
+      }
+
+      // 1. Сохраняем в браузер (для F5)
+      localStorage.setItem('userToken', data.token); 
+      localStorage.setItem('userData', JSON.stringify(data.user));
+
+      // 2. Обновляем состояние в App.jsx БЕЗ перезагрузки страницы
+      setUser(data.user); 
+      
+      // 3. Переключаем экран на профиль
+      setView('profile'); 
+
+      alert(data.message);
+      // window.location.reload(); <-- УДАЛИЛИ ЭТО, чтобы не вылетало на главную
+
+    } catch (err) {
+      setError(err.message === 'Failed to fetch' ? 'Сервер Сони (порт 3001) не отвечает' : err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div style={{ padding: '40px 20px', maxWidth: '450px', margin: '50px auto' }}>
-      <div style={{ background: '#fff', padding: '30px', borderRadius: '8px', border: '1px solid #dee2e6', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-        
-        {/* Заголовок формы */}
-        <h2 style={{ textAlign: 'center', marginBottom: '25px', color: '#212529' }}>
+      <div style={{ background: '#fff', padding: '30px', borderRadius: '8px', border: '1px solid #dee2e6' }}>
+        <h2 style={{ textAlign: 'center', marginBottom: '25px' }}>
           {isLogin ? 'Авторизация' : 'Регистрация студента'}
         </h2>
 
-        <form>
-          {/* Дополнительное поле ФИО только для регистрации */}
+        {error && (
+          <div style={{ background: '#dc3545', color: '#fff', padding: '10px', borderRadius: '4px', marginBottom: '15px', textAlign: 'center' }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
           {!isLogin && (
             <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>ФИО</label>
-              <input 
-                type="text" 
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ced4da', fontSize: '14px', outline: 'none' }} 
-                placeholder="Иванов Иван Иванович" 
-              />
+              <label style={{ display: 'block', fontSize: '14px' }}>ФИО</label>
+              <input type="text" required value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ width: '100%', padding: '10px' }} />
             </div>
           )}
-
-          {/* Поле Email (есть везде) */}
           <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Электронная почта</label>
-            <input 
-              type="email" 
-              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ced4da', fontSize: '14px', outline: 'none' }} 
-              placeholder="username@spbgasu.ru" 
-            />
+            <label style={{ display: 'block', fontSize: '14px' }}>Почта</label>
+            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '10px' }} />
           </div>
-
-          {/* Поле Пароль (есть везде) */}
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Пароль</label>
-            <input 
-              type="password" 
-              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ced4da', fontSize: '14px', outline: 'none' }} 
-              placeholder="Укажите пароль" 
-            />
+            <label style={{ display: 'block', fontSize: '14px' }}>Пароль</label>
+            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '10px' }} />
           </div>
-
-          {/* Кнопка отправки */}
-          <button 
-            type="button" 
-            style={{ width: '100%', padding: '12px', background: '#0d6efd', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '15px', transition: 'background 0.2s' }}
-            onMouseOver={(e) => e.target.style.background = '#0b5ed7'}
-            onMouseOut={(e) => e.target.style.background = '#0d6efd'}
-          >
-            {isLogin ? 'Войти' : 'Зарегистрироваться'}
+          <button type="submit" disabled={isLoading} style={{ width: '100%', padding: '12px', background: '#0d6efd', color: '#fff', cursor: 'pointer' }}>
+            {isLoading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Зарегистрироваться')}
           </button>
         </form>
 
-        {/* Ссылка-переключатель между формами */}
-        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px' }}>
-          <span style={{ color: '#6c757d' }}>
-            {isLogin ? 'Еще нет аккаунта? ' : 'Уже зарегистрированы? '}
-          </span>
-          <span 
-            style={{ color: '#0d6efd', cursor: 'pointer', textDecoration: 'underline' }}
-            onClick={() => setIsLogin(!isLogin)}
-          >
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <span style={{ cursor: 'pointer', color: '#0d6efd', textDecoration: 'underline' }} onClick={() => setIsLogin(!isLogin)}>
             {isLogin ? 'Создать аккаунт' : 'Войти в профиль'}
           </span>
         </div>
-
       </div>
     </div>
   );
