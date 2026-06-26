@@ -1,51 +1,63 @@
 import React from 'react';
 
-function Profile() {
+function PersonalArea({ user, onLogout, onNavigateToFavorites, onNavigateToReviews }) {
   return (
-    <div style={{ padding: '40px 20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h2 style={{ marginBottom: '30px' }}>Личный кабинет студента</h2>
+    <div style={{ maxWidth: '900px', margin: '40px auto', padding: '40px', background: 'var(--white)', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow)' }}>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '30px' }}>
-        {/* Левая колонка: Информация */}
-        <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', border: '1px solid #dee2e6', height: 'fit-content' }}>
-          <h3 style={{ marginBottom: '15px', fontSize: '18px' }}>Учетные данные</h3>
-          <p style={{ marginBottom: '8px' }}><strong>ФИО:</strong> Иванов Иван Иванович</p>
-          <p style={{ marginBottom: '20px' }}><strong>Почта:</strong> student@spbgasu.ru</p>
-          <button style={{ width: '100%', padding: '10px', background: '#dc3545', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-            Выйти из аккаунта
-          </button>
-        </div>
+      <h2 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '30px', textAlign: 'center' }}>
+        Личный кабинет
+      </h2>
 
-        {/* Правая колонка: Уведомления, Избранное и Отзывы */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Уведомления */}
-          <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-            <h4 style={{ color: '#0d6efd', marginBottom: '10px' }}>🔔 Уведомления</h4>
-            <div style={{ padding: '10px', background: '#e2f0fe', borderRadius: '4px', fontSize: '14px' }}>
-              Пользователь Петров П.П. поставил <strong>лайк</strong> на ваш отзыв к книге «Мастер и Маргарита».
-            </div>
+      {/* Блок с основной информацией и учетными данными (отцентрирован) */}
+      <div style={{ marginBottom: '40px', paddingBottom: '30px', borderBottom: '1px solid var(--border)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px', color: 'var(--text)' }}>
+          Персональные данные
+        </h3>
+        <div style={{ display: 'grid', gap: '16px', background: 'var(--pink-light)', padding: '24px', borderRadius: '12px', width: '100%', maxWidth: '550px', textAlign: 'center' }}>
+          <div>
+            <span style={labelStyle}>Фамилия, имя, отчество:</span>
+            <div style={valueStyle}>{user?.fullName || 'Иванов Иван Иванович'}</div>
           </div>
-
-          {/* Избранные книги */}
-          <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-            <h4 style={{ marginBottom: '10px' }}>⭐ Избранные книги</h4>
-            <ul style={{ paddingLeft: '20px', fontSize: '14px' }}>
-              <li>Преступление и наказание — Ф. Достоевский</li>
-            </ul>
-          </div>
-
-          {/* Мои отзывы */}
-          <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-            <h4 style={{ marginBottom: '10px' }}>✍️ Мои отзывы</h4>
-            <div style={{ fontSize: '14px', borderLeft: '3px solid #ced4da', paddingLeft: '10px' }}>
-              <p><em>«Отличная книга, перечитываю второй раз за время учебы!»</em></p>
-              <small style={{ color: '#6c757d' }}>К книге: Приключения Тома Сойера</small>
-            </div>
+          <div>
+            <span style={labelStyle}>Электронная почта:</span>
+            <div style={user?.email || 'user@example.com'} style={valueStyle}>{user?.email || 'user@spbgasu.ru'}</div>
           </div>
         </div>
       </div>
+
+      {/* Разделы профиля (Избранное и Мои отзывы) */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '50px' }}>
+        <button 
+          onClick={onNavigateToFavorites} 
+          style={cardButtonStyle}
+        >
+          <span style={{ fontSize: '28px' }}>❤️</span>
+          <span style={{ fontSize: '16px', fontWeight: '700' }}>Избранные книги</span>
+        </button>
+
+        <button 
+          onClick={onNavigateToReviews} 
+          style={cardButtonStyle}
+        >
+          <span style={{ fontSize: '28px' }}>📝</span>
+          <span style={{ fontSize: '16px', fontWeight: '700' }}>Мои отзывы</span>
+        </button>
+      </div>
+
+      {/* Кнопка выйти */}
+      <button 
+        onClick={onLogout} 
+        style={{ width: '100%', padding: '16px', background: 'var(--text)', color: 'var(--white)', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', textAlign: 'center', transition: 'background 0.2s' }}
+      >
+        Выйти
+      </button>
+
     </div>
   );
 }
 
-export default Profile;
+const labelStyle = { display: 'block', fontSize: '12px', color: 'var(--text-light)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' };
+const valueStyle = { fontSize: '16px', fontWeight: '700', color: 'var(--text)' };
+const cardButtonStyle = { background: 'var(--white)', border: '1px solid var(--border)', borderRadius: '16px', padding: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', cursor: 'pointer', boxShadow: 'var(--shadow)', fontFamily: 'inherit', color: 'var(--text)', transition: 'transform 0.2s, box-shadow 0.2s' };
+
+export default PersonalArea;

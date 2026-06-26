@@ -1,59 +1,80 @@
 import React from 'react';
 
+// ИМПОРТИРУЕМ КАРТИНКИ ИЗ ПАПКИ ASSETS
+import photoSofiya from '../assets/Sofiya.jpg';
+import photoKristina from '../assets/Kristina.jpg';
+import photoSimeon from '../assets/Simeon.jpg';
+
 function Team() {
-  const teamMembers = [
+  const teamMakers = [
     { 
-      name: 'Фурман Софья', 
+      id: 1, 
       role: 'Backend Developer', 
-      contribution: 'Настройка сервера Node.js, маршрутизация Express, работа с базой данных JSON и загрузка файлов через Multer.' 
+      name: 'Фураман Софья', 
+      desc: 'Настройка сервера Node.js, маршрутизация Express, работа с базой данных JSON и загрузка файлов через Multer.',
+      image: photoSofiya
     },
     { 
-      name: 'Хлебникова Кристина', 
+      id: 2, 
       role: 'UI/UX Designer / Верстальщик', 
-      contribution: 'Создание структуры проекта, адаптивная верстка на CSS Grid и Flexbox, визуальный дизайн страниц, эффекты анимации при наведении.' 
+      name: 'Хлебникова Кристина', 
+      desc: 'Создание структуры проекта, адаптивная верстка на CSS Grid и Flexbox, визуальный дизайн страниц, эффекты анимации при наведении.',
+      image: photoKristina
     },
     { 
-      name: 'Зенков Симеон', 
+      id: 3, 
       role: 'Frontend State & Integration', 
-      contribution: 'Клиентский роутинг, интеграция с API через fetch(), обработка состояний загрузки/ошибок и сохранение сессии в localStorage.' 
+      name: 'Зенков Симеон', 
+      desc: 'Клиентский роутинг, интеграция с API через fetch(), обработка состояний загрузки/ошибок и сохранение сессии в localStorage.',
+      image: photoSimeon
     }
   ];
 
   return (
-    <div style={{ padding: '40px 20px', maxWidth: '1000px', margin: '0 auto' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#212529' }}>Наша Команда Разработчиков</h2>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-        {teamMembers.map((member, index) => (
-          <div 
-            key={index} 
-            className="team-card"
-            style={{ 
-              background: '#fff', 
-              padding: '25px', 
-              borderRadius: '8px', 
-              border: '1px solid #dee2e6', 
-              transition: 'all 0.3s ease',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-            }}
-          >
-            <div style={{ width: '70px', height: '70px', background: '#0d6efd', borderRadius: '50%', marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#fff', fontSize: '20px' }}>
-              {member.name[0]}
+    <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: '60px 40px', textAlign: 'center' }}>
+      <h2 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '40px', color: 'var(--text)' }}>
+        Наша Команда Разработчиков
+      </h2>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '30px' }}>
+        {teamMakers.map(member => (
+          <div key={member.id} style={{
+            background: 'var(--white)',
+            padding: '30px',
+            borderRadius: '16px',
+            border: '1px solid var(--border)',
+            boxShadow: 'var(--shadow)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center'
+          }}>
+            <div style={{ 
+              width: '130px', 
+              height: '130px', 
+              borderRadius: '50%', 
+              backgroundColor: 'var(--pink-light)', 
+              marginBottom: '24px',
+              border: '2px solid var(--border)',
+              backgroundImage: `url(${member.image})`,
+              backgroundSize: 'cover', 
+              backgroundPosition: 'center', 
+              backgroundRepeat: 'no-repeat'
+            }}>
             </div>
-            <h3 style={{ color: '#0d6efd', marginBottom: '5px' }}>{member.name}</h3>
-            <p style={{ fontWeight: 'bold', color: '#6c757d', marginBottom: '15px', fontSize: '14px' }}>{member.role}</p>
-            <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#495057' }}>{member.contribution}</p>
+
+            <h4 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--text)', margin: '0 0 4px 0' }}>
+              {member.name}
+            </h4>
+            <span style={{ fontSize: '13px', fontWeight: '700', color: 'var(--pink)', marginBottom: '16px' }}>
+              {member.role}
+            </span>
+            <p style={{ fontSize: '14px', color: 'var(--text-light)', lineHeight: '1.5' }}>
+              {member.desc}
+            </p>
           </div>
         ))}
       </div>
-
-      <style>{`
-        .team-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-          border-color: #0d6efd !important;
-        }
-      `}</style>
     </div>
   );
 }
