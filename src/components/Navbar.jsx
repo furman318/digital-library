@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from '../assets/logo.jpg';
 
-function Navbar({ onNavigate }) {
+function Navbar({ setView, user, onLogout }) {
   const links = [
     { label: 'Главная', page: 'home' },
     { label: 'Каталог', page: 'catalog' }, 
@@ -38,11 +38,11 @@ function Navbar({ onNavigate }) {
         </span>
       </div>
 
-      <ul style={{ display: 'flex', listStyle: 'none', gap: '6px', alignItems: 'center' }}>
+      <ul style={{ display: 'flex', listStyle: 'none', gap: '6px', alignItems: 'center', margin: 0, padding: 0 }}>
         {links.map((link) => (
           <li key={link.label}>
             <button
-              onClick={() => onNavigate && onNavigate(link.page)}
+              onClick={() => setView && setView(link.page)}
               style={navLinkButtonStyle}
               onMouseOver={(e) => { e.target.style.background = 'var(--pink-light)'; e.target.style.color = 'var(--pink)'; }}
               onMouseOut={(e) => { e.target.style.background = 'none'; e.target.style.color = 'var(--text)'; }}
@@ -52,9 +52,25 @@ function Navbar({ onNavigate }) {
           </li>
         ))}
         <li>
-          <button onClick={() => onNavigate && onNavigate('auth')} style={navAuthButtonStyle} onMouseOver={(e) => { e.target.style.opacity = '0.9'; e.target.style.transform = 'translateY(-1px)'; }} onMouseOut={(e) => { e.target.style.opacity = '1'; e.target.style.transform = 'none'; }}>
-            Войти
-          </button>
+          {user ? (
+            <button 
+              onClick={onLogout} 
+              style={{ ...navAuthButtonStyle, background: 'var(--pink-light)', color: 'var(--pink)' }}
+              onMouseOver={(e) => { e.target.style.opacity = '0.9'; e.target.style.transform = 'translateY(-1px)'; }} 
+              onMouseOut={(e) => { e.target.style.opacity = '1'; e.target.style.transform = 'none'; }}
+            >
+              Выход ({user.fullName.split(' ')[0]})
+            </button>
+          ) : (
+            <button 
+              onClick={() => setView && setView('auth')} 
+              style={navAuthButtonStyle} 
+              onMouseOver={(e) => { e.target.style.opacity = '0.9'; e.target.style.transform = 'translateY(-1px)'; }} 
+              onMouseOut={(e) => { e.target.style.opacity = '1'; e.target.style.transform = 'none'; }}
+            >
+              Войти
+            </button>
+          )}
         </li>
       </ul>
     </nav>

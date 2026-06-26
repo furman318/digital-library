@@ -20,7 +20,7 @@ function PersonalArea({ user, onLogout, onNavigateToFavorites, onNavigateToRevie
           </div>
           <div>
             <span style={labelStyle}>Электронная почта:</span>
-            <div style={user?.email || 'user@example.com'} style={valueStyle}>{user?.email || 'user@spbgasu.ru'}</div>
+            <div style={valueStyle}>{user?.email || 'user@spbgasu.ru'}</div>
           </div>
         </div>
       </div>
